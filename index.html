@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فێربوونی زمان</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="theme-color" content="#7d6dd6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="زمان">
+<style>
+:root{--bg:#f3f0fa;--card:#fff;--text:#1d1b2e;--muted:#6e6a85;--accent:#6c3ce9;--accent2:#e8590c;--line:#e4e0f3;--ok:#2b8a3e;--okbg:#e3f7e8;--bad:#c92a2a;--badbg:#fde8e8;--p:#7048e8;--n:#1c7ed6;--f:#e8590c;--sh:0 4px 14px rgba(70,50,140,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13121c;--card:#1e1c2c;--text:#f0eefa;--muted:#a09cba;--accent:#9775fa;--accent2:#ff922b;--line:#2f2c44;--ok:#69db7c;--okbg:#16301d;--bad:#ff8787;--badbg:#3a1c1c;--p:#9775fa;--n:#74c0fc;--f:#ff922b;--sh:0 4px 14px rgba(0,0,0,.4)}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,"Noto Naskh Arabic",Tahoma,sans-serif;line-height:1.7;display:flex;justify-content:center;padding:12px}
+main{width:min(100%,440px)}
+.hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:20px;padding:18px;text-align:center;box-shadow:var(--sh);margin-bottom:14px}
+.hero h1{margin:0;font-size:1.4rem}.hero p{margin:4px 0 0;opacity:.92;font-size:.95rem}
+.pb{height:8px;background:rgba(255,255,255,.3);border-radius:6px;margin-top:10px;overflow:hidden}.pb i{display:block;height:100%;background:#fff;border-radius:6px}
+button{font:inherit;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-size:1rem;cursor:pointer}
+button:active{transform:scale(.97)}
+button.ghost{background:var(--card);color:var(--text);border:2px solid var(--line)}
+.tile{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:var(--card);color:var(--text);border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--sh)}
+.tile .ic{font-size:1.8rem}.tile b{display:block}.tile small{color:var(--muted)}.tile .st{margin-inline-start:auto;font-size:1.3rem}
+.tile.lock{opacity:.5}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--sh)}
+.card h2{margin:0 0 6px;font-size:1.1rem}.card p{margin:4px 0}
+.en{direction:ltr;text-align:left;font-weight:700}
+.kd{color:var(--muted);font-size:.95rem}
+.center{text-align:center}
+.tag{display:inline-block;padding:0 10px;border-radius:99px;color:#fff;font-size:.85rem;margin-inline-start:6px}
+.sig{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.sig span{direction:ltr;background:var(--bg);border-radius:8px;padding:0 10px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.grid button{background:var(--card);color:var(--text);border:2px solid var(--line);padding:12px 0;font-weight:700}
+.grid button.done{background:var(--okbg);border-color:var(--ok)}.grid button.lock{opacity:.4}
+.words{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.words button{background:var(--bg);color:var(--text);border:2px solid var(--line);padding:8px;text-align:center;line-height:1.4}
+.words b{display:block;direction:ltr}.words small{color:var(--muted)}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:12px}.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.big{font-size:2rem;font-weight:800;direction:ltr;text-align:center;margin:6px 0}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opts button{background:var(--card);color:var(--text);border:2px solid var(--line);font-size:1.05rem}
+.opts button:disabled{opacity:1}.opts .ok{background:var(--okbg);border-color:var(--ok)}.opts .no{background:var(--badbg);border-color:var(--bad)}
+.exp{padding:10px 12px;border-radius:12px;margin-bottom:10px}.exp.ok{background:var(--okbg)}.exp.no{background:var(--badbg)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;padding:8px;border:2px dashed var(--line);border-radius:12px;margin:10px 0;direction:ltr}
+.chip{background:var(--bg);color:var(--text);border:2px solid var(--line);padding:6px 12px;font-weight:700}
+.inp{width:100%;font:inherit;font-size:1.2rem;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--text);margin:10px 0;text-align:center}
+.timer{font-weight:800;font-size:1.2rem;display:flex;justify-content:space-between;margin-bottom:8px}
+.nav{margin-bottom:10px}
+.words small.r{display:block;color:var(--accent);font-weight:700}
+details.card summary{cursor:pointer}
+/* soft mobile-first theme */
+:root{--bg:#f7f5fc;--card:#fffefd;--text:#2b2940;--muted:#7d7a93;--accent:#7d6dd6;--accent2:#f0a58a;--onacc:#fff;--line:#ede9f7;--ok:#4f9d69;--okbg:#e9f6ee;--bad:#d46a6a;--badbg:#fbeeee;--p:#8b7bd8;--n:#6fa8dc;--f:#eda27e;--sh:0 6px 22px rgba(110,95,170,.10)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17161f;--card:#201f2b;--text:#eceaf6;--muted:#a3a0b8;--accent:#a99bef;--accent2:#f2a98d;--onacc:#1c1830;--line:#2c2a3b;--ok:#7fd49a;--okbg:#1b2e23;--bad:#f09a9a;--badbg:#35202a;--p:#aa9cf0;--n:#8fbfe9;--f:#f2a98d;--sh:0 6px 22px rgba(0,0,0,.3)}}
+html{-webkit-text-size-adjust:100%}
+body{padding:14px;min-height:100dvh;font-size:16px;-webkit-tap-highlight-color:transparent}
+main{width:min(100%,480px)}
+.hero{border-radius:28px;padding:20px 16px;color:var(--onacc);background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.hero p{opacity:.95}
+.hero .pb{height:10px;border-radius:99px;background:rgba(255,255,255,.35)}
+.hero .pb i{background:var(--onacc);border-radius:99px;transition:width .4s}
+button{touch-action:manipulation;min-height:48px;border-radius:16px;color:var(--onacc);font-weight:600;transition:transform .12s,background .2s}
+button.ghost{color:var(--text)}
+.tile,.card{border-width:1.5px;border-radius:22px}
+.tile{min-height:68px;padding:12px 16px}
+.tile.lock{opacity:.55}
+.card{padding:16px}
+.bar{height:10px;border-radius:99px}.bar i{border-radius:99px}
+.big{font-size:2.1rem}
+.opts{gap:10px}
+.opts button{min-height:56px;font-size:1.1rem;font-weight:600}
+.words{gap:10px}
+.words button{min-height:62px;border-radius:16px}
+.grid{gap:10px}
+.grid button{min-height:52px;border-radius:16px}
+.chip{min-height:44px;border-radius:14px}
+.chips{border-width:1.5px;border-radius:18px}
+.exp{border-radius:18px}
+.inp{font-size:1.3rem;min-height:54px;border-radius:16px;border-width:1.5px}
+.center button{display:block;width:100%;max-width:340px;margin:6px auto}
+#fbk .center{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px));padding-bottom:4px}
+@media (max-width:360px){.grid{grid-template-columns:repeat(4,1fr)}.hero h1{font-size:1.2rem}.big{font-size:1.8rem}}
+</style>
+</head>
+<body>
+<main><div class="hero"><h1 id="hh">🌍 فێربوونی زمان</h1><p id="hs">زمانێک هەڵبژێرە</p><div class="pb"><i id="hp"></i></div></div><div id="app"></div></main>
+<script>
+const RAW=`the=ئەو (ئامرازی ناسراو),be=بوون,to=بۆ,of=ی/هی,and=و,a=یەک,in=لە ناو,that=ئەوە,have=هەبوون,I=من,it=ئەو (بێگیان),for=بۆ,not=نا,on=لەسەر,with=لەگەڵ,he=ئەو (نێر),as=وەک,you=تۆ,do=کردن,at=لە,this=ئەمە,but=بەڵام,his=هی ئەو (نێر),by=بە,from=لە
+they=ئەوان,we=ئێمە,say=وتن,her=هی ئەو (مێ),she=ئەو (مێ),or=یان,an=یەک,will=دەبێت (داهاتوو),my=هی من,one=یەک,all=هەموو,would=دەیویست,there=ئەوێ,their=هی ئەوان,what=چی,so=بۆیە,up=سەرەوە,out=دەرەوە,if=ئەگەر,about=دەربارەی,who=کێ,get=وەرگرتن,which=کام,go=چوون,me=من (بەرکار)
+when=کاتێک,make=دروستکردن,can=دەتوانم,like=وەک/حەز,time=کات,no=نەخێر,just=تەنیا,him=ئەو (بەرکار),know=زانین,take=وەرگرتن,people=خەڵک,into=بۆ ناو,year=ساڵ,your=هی تۆ,good=باش,some=هەندێک,could=دەیتوانی,them=ئەوان (بەرکار),see=بینین,other=تر,than=لە (بەراورد),then=پاشان,now=ئێستا,look=سەیرکردن,only=تەنیا
+come=هاتن,its=هی ئەو (بێگیان),over=سەرووی,think=بیرکردنەوە,also=هەروەها,back=دواوە,after=دوای,use=بەکارهێنان,two=دوو,how=چۆن,our=هی ئێمە,work=کارکردن,first=یەکەم,well=باش,way=ڕێگا,even=تەنانەت,new=نوێ,want=ویستن,because=چونکە,any=هەر,these=ئەمانە,give=دان,day=ڕۆژ,most=زۆربەی,us=ئێمە (بەرکار)
+is=ە/دەبێت,was=بوو,are=ن,been=بووە,has=هەیە,had=هەبوو,were=بوون,said=وتی,did=کرد,made=دروستی کرد,may=لەوانەیە,should=پێویستە,must=دەبێت,many=زۆر (ژمارە),much=زۆر (بڕ),more=زیاتر,very=زۆر,still=هێشتا,such=وا,through=بەناو,between=نێوان,own=خۆی,never=هەرگیز,same=هەمان,another=یەکێکی تر
+man=پیاو,woman=ژن,child=منداڵ,world=جیهان,life=ژیان,hand=دەست,part=بەش,place=شوێن,case=حاڵەت,week=هەفتە,company=کۆمپانیا,system=سیستەم,program=بەرنامە,question=پرسیار,government=حکومەت,number=ژمارە,night=شەو,point=خاڵ,home=ماڵ,water=ئاو,room=ژوور,mother=دایک,area=ناوچە,money=پارە,story=چیرۆک
+fact=ڕاستی,month=مانگ,lot=زۆر,right=ڕاست/مافە,study=خوێندن,book=کتێب,eye=چاو,job=کار/پیشە,word=وشە,business=بازرگانی,issue=کێشە,side=لا,kind=جۆر,head=سەر,house=خانوو,service=خزمەت,friend=هاوڕێ,father=باوک,power=هێز,hour=کاتژمێر,game=یاری,line=هێڵ,end=کۆتایی,member=ئەندام,law=یاسا
+car=ئۆتۆمبێل,city=شار,community=کۆمەڵگا,name=ناو,president=سەرۆک,team=تیم,minute=خولەک,idea=بیرۆکە,kid=منداڵ (کورتکراوە),body=لەش,information=زانیاری,school=قوتابخانە,door=دەرگا,health=تەندروستی,person=کەس,art=هونەر,war=جەنگ,history=مێژوو,party=ئاهەنگ,result=ئەنجام,change=گۆڕان,morning=بەیانی,reason=هۆکار,research=توێژینەوە,girl=کچ
+ask=پرسین,tell=وتن بە,feel=هەستکردن,try=هەوڵدان,leave=جێهێشتن,call=بانگکردن,need=پێویستبوون,become=بوون بە,mean=مانا,keep=هێشتنەوە,let=ڕێدان,begin=دەستپێکردن,seem=وادیارە,help=یارمەتیدان,talk=قسەکردن,turn=وەرگەڕان,start=دەستپێکردن (ئامێر),show=پیشاندان,hear=بیستن,play=یاریکردن,run=ڕاکردن,move=جوڵان,live=ژیان (نیشتەجێبوون),believe=باوەڕکردن,bring=هێنان
+happen=ڕووداندان,write=نووسین,sit=دانیشتن,stand=ڕاوەستان,lose=لەدەستدان,pay=پارەدان,meet=ڕووبەڕووبوون,include=لەخۆگرتن,continue=بەردەوامبوون,set=دانان,learn=فێربوون,lead=سەرکردایەتی,understand=تێگەیشتن,watch=تەماشاکردن,follow=شوێنکەوتن,stop=وەستان,create=دروستکردن (نوێ),speak=قسەکردن (زمان),read=خوێندنەوە,allow=ڕێپێدان,add=زیادکردن,spend=خەرجکردن,grow=گەشەکردن,open=کردنەوە,walk=پیاسەکردن
+win=بردنەوە,offer=پێشکەشکردن,remember=بیرهاتنەوە,love=خۆشویستن,consider=لەبەرچاوگرتن,appear=دەرکەوتن,buy=کڕین,wait=چاوەڕێکردن,serve=خزمەتکردن,die=مردن,send=ناردن,expect=چاوەڕوانکردن,build=بیناکردن,stay=مانەوە,fall=کەوتن,cut=بڕین,reach=گەیشتن,kill=کوشتن,remain=بەجێمان,suggest=پێشنیارکردن,raise=بەرزکردنەوە,pass=تێپەڕین,sell=فرۆشتن,require=پێویستکردن,decide=بڕیاردان
+big=گەورە,small=بچووک,long=درێژ,young=گەنج,old=کۆن/پیر,great=مەزن,high=بەرز,low=نزم,important=گرنگ,different=جیاواز,large=پان,early=زوو,late=درەنگ,hard=قورس/تونج,easy=ئاسان,bad=خراپ,best=باشترین,better=باشتر,real=ڕاستەقینە,free=ئازاد/بەخۆڕایی,full=پڕ,special=تایبەت,clear=ڕوون,sure=دڵنیا,whole=تەواو
+hot=گەرم,cold=سارد,happy=دڵخۆش,sad=خەمبار,tired=ماندوو,strong=بەهێز,weak=لاواز,rich=دەوڵەمەند,poor=هەژار,fast=خێرا,slow=هێواش,cheap=هەرزان,expensive=گران,clean=پاک,dirty=پیس,dark=تاریک,light=ڕووناک/سووک,heavy=قورس (کێش),quiet=ئارام,loud=بەدەنگ,safe=سەلامەت,dangerous=مەترسیدار,beautiful=جوان,ugly=ناشرین,ready=ئامادە
+food=خواردن,bread=نان,tea=چا,coffee=قاوە,milk=شیر,rice=برنج,meat=گۆشت,fish=ماسی,egg=هێلکە,fruit=میوە,apple=سێو,salt=خوێ,sugar=شەکر,breakfast=نانی بەیانی,lunch=نانی نیوەڕۆ,dinner=نانی شێو,cook=چێشتلێنان,eat=خواردن,drink=خواردنەوە,hungry=برسی,thirsty=تینوو,kitchen=چێشتخانە,table=مێز,cup=پیاڵە,plate=قاپ
+today=ئەمڕۆ,tomorrow=سبەینێ,yesterday=دوێنێ,tonight=ئەمشەو,evening=ئێوارە,afternoon=پاشنیوەڕۆ,always=هەمیشە,usually=بەزۆری,sometimes=هەندێک جار,often=زۆر جار,soon=بەم زووانە,later=دواتر,before=پێش,again=دووبارە,ago=لەمەوپێش,street=شەقام,shop=دوکان,market=بازاڕ,hospital=نەخۆشخانە,airport=فڕۆکەخانە,bank=بانک,park=باخچە,village=گوند,country=وڵات,road=ڕێگای گشتی
+family=خێزان,brother=برا,sister=خوشک,son=کوڕ,daughter=کچ (منداڵ),wife=هاوسەر (ژن),husband=هاوسەر (پیاو),baby=کۆرپە,teacher=مامۆستا,student=خوێندکار,doctor=دکتۆر,worker=کرێکار,driver=شوفێر,farmer=جوتیار,king=پاشا,phone=مۆبایل,computer=کۆمپیوتەر,picture=وێنە,music=مۆسیقا,song=گۆرانی,letter=نامە,news=هەواڵ,paper=کاغەز,window=پەنجەرە,bed=جێگا
+sun=خۆر,moon=مانگ,star=ئەستێرە,sky=ئاسمان,rain=باران,snow=بەفر,wind=با,fire=ئاگر,tree=دار,flower=گوڵ,river=ڕووبار,sea=دەریا,mountain=شاخ,field=کێڵگە,land=زەوی,stone=بەرد,animal=ئاژەڵ,dog=سەگ,cat=پشیلە,horse=ئەسپ,bird=باڵندە,color=ڕەنگ,red=سوور,blue=شین,green=سەوز
+three=سێ,four=چوار,five=پێنج,six=شەش,seven=حەوت,eight=هەشت,nine=نۆ,ten=دە,hundred=سەد,thousand=هەزار,white=سپی,black=ڕەش,yellow=زەرد,left=چەپ,middle=ناوەڕاست,next=داهاتوو,last=کۆتایی,half=نیوە,both=هەردووکیان,each=هەر یەک,every=هەموو (جار),few=کەم (ژمارە),enough=بەس,little=کەم/بچووک,together=پێکەوە
+sleep=نووستن,wake=هەستان,wash=شتن,wear=لەبەرکردن,carry=هەڵگرتن,drive=لێخوڕین,fly=فڕین,swim=مەلەکردن,sing=گۆرانی وتن,dance=هەڵپەڕین,laugh=پێکەنین,cry=گریان,smile=زەردەخەنە,wish=ئاوات خواستن,hope=هیوا,dream=خەون,plan=پلان,choose=هەڵبژاردن,finish=تەواوکردن,teach=فێرکردن,travel=گەشتکردن,visit=سەردانکردن,return=گەڕانەوە,forget=لەبیرکردن,find=دۆزینەوە
+put=دانان,thing=شت,problem=کێشە (گەورە),hold=گرتن,here=لێرە,away=بەدوور,where=کوێ,why=بۆچی,yes=بەڵێ,please=تکایە,thank=سوپاسکردن,sorry=ببورە,welcome=بەخێربێیت,hello=سڵاو,goodbye=خوا حافیز,maybe=لەوانەیە,really=بەڕاستی,around=دەوروبەر,without=بەبێ,under=ژێر,near=نزیک,far=دوور,inside=ناوەوە,outside=دەرەوە,against=دژ`;
+const W=RAW.split('\n').join(',').split(',').map(s=>{const i=s.indexOf('=');return[s.slice(0,i).trim(),s.slice(i+1).trim()]});
+const TN={p:'ڕابردوو',n:'ئێستە',f:'داهاتوو'},TC={p:'var(--p)',n:'var(--n)',f:'var(--f)'};
+const LES=[
+['p','Past','کارێک کە تەواو بووە.',['yesterday','last night','last year'],'وشە + ed (play ← played)، یان نایاسایی: go ← went، eat ← ate.','I played football yesterday.','دوێنێ یاری تۆپم کرد.'],
+['n','Present','کارێکی ئاسایی/هەمیشەیی یان ڕاستی.',['every day','always','usually'],'وشەی سادە؛ بۆ he/she/it زیادکردنی s: live ← lives.','He lives in a big house.','ئەو لە خانوویەکی گەورەدا دەژی.'],
+['f','Future','کارێک کە دواتر دەبێت.',['tomorrow','next week','tonight'],'will + وشەی سادە: will go، will buy.','I will call you tomorrow.','سبەینێ پەیوەندیت پێوە دەکەم.']];
+const Q=[
+['Yesterday I ___ football.','played',['play','will play'],'p','دوێنێ یاری تۆپم کرد.'],
+['We ___ to school yesterday.','went',['go','will go'],'p','دوێنێ چووین بۆ قوتابخانە.'],
+['They ___ pizza last night.','ate',['eat','will eat'],'p','شەوی ڕابردوو پیتزایان خوارد.'],
+['Last year he ___ a car.','bought',['buy','will buy'],'p','ساڵی ڕابردوو ئەو ئۆتۆمبێلێکی کڕی.'],
+['I ___ tea every morning.','drink',['drank','will drink'],'n','هەموو بەیانییەک چا دەخۆمەوە.'],
+['Every day she ___ to work.','walks',['walked','will walk'],'n','هەموو ڕۆژێک ئەو بە پێ دەچێت بۆ کار.'],
+['He ___ in a big house.','lives',['lived','will live'],'n','ئەو لە خانوویەکی گەورەدا دەژی.'],
+['We ___ English every day.','learn',['learned','will learn'],'n','هەموو ڕۆژێک ئینگلیزی فێر دەبین.'],
+['Tomorrow I ___ to work.','will go',['went','go'],'f','سبەینێ دەچم بۆ کار.'],
+['Next week she ___ a car.','will buy',['bought','buy'],'f','هەفتەی داهاتوو ئەو ئۆتۆمبێلێک دەکڕێت.'],
+['Tonight they ___ pizza.','will eat',['ate','eat'],'f','ئەمشەو ئەوان پیتزا دەخۆن.'],
+['I ___ you tomorrow.','will call',['called','call'],'f','سبەینێ پەیوەندیت پێوە دەکەم.']];
+const RULE={p:'کارەکە تەواو بووە، بۆیە وشەکە ڕابردووە.',n:'ئاسایی یان ڕاستییە، بۆیە وشەی سادە (بۆ he/she/it لەگەڵ s).',f:'کارەکە دواتر دەبێت، بۆیە will + وشەی سادە.'};
+const ST=[
+{ic:'📚',t:'٥٠٠ وشەی باو',d:'٢٠ بەش، هەر یەکە ٢٥ وشە',go:()=>st1()},
+{ic:'⏳',t:'ڕابردوو، ئێستە، داهاتوو',d:'وانە و ١٠ پرسیار',go:()=>st2()},
+{ic:'🧩',t:'ڕستە دروستکردن',d:'وشەکان بە ڕیز دابنێ',go:()=>st3()},
+{ic:'🎧',t:'گوێگرتن و نووسین',d:'گوێ بگرە و وشەکە بنووسە',go:()=>st4()},
+{ic:'⚡',t:'خێرایی ٦٠ چرکە',d:'زۆرترین وەڵامی دروست',go:()=>st5()}];
+let P={sets:{},s:{},best:0};
+try{P=Object.assign(P,JSON.parse(localStorage.getItem('ew2')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('ew2',JSON.stringify(P))}catch(e){}};
+const $=id=>document.getElementById(id),app=$('app');let TM=null,CUR='en';
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sp=t=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=CUR==='de'?'de-DE':'en-US';u.rate=.85;speechSynthesis.speak(u)}catch(e){}};
+const tag=k=>'<span class="tag" style="background:'+TC[k]+'">'+TN[k]+'</span>';
+const nav=(f)=>'<div class="nav"><button class="ghost" id="bk">↩ گەڕانەوە</button></div>';
+function bindBk(f){const b=$('bk');if(b)b.onclick=f}
+function home(){
+  clearInterval(TM);CUR='en';hero('📘 فێربوونی ئینگلیزی','مەرحەلە بە مەرحەلە، لە ٥٠٠ وشەی باوەوە');
+  const n=Object.keys(P.sets).length*25;$('hp').style.width=(n/5)+'%';
+  app.innerHTML='<div class="nav"><button class="ghost" id="bk">↩ زمانەکان</button></div>'+ST.map((s,i)=>{const open=i===0||P.s[i];return '<button class="tile'+(open?'':' lock')+'" data-i="'+i+'"><span class="ic">'+s.ic+'</span><span><b>مەرحەلەی '+(i+1)+': '+s.t+'</b><small>'+s.d+'</small></span><span class="st">'+(P.s[i+1]?'✅':open?'▶':'🔒')+'</span></button>'}).join('')+'<p class="center kd">وشە فێربووەکان: '+n+' / 500 — بۆ کردنەوەی مەرحەلەی دواتر دەبێت ٨ لە ١٠ (یان ٦ لە ٨) وەربگریت.</p>';
+  app.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i===0||P.s[i])ST[i].go()});bindBk(langs);
+}
+function run(items,thr,onPass,back,render){
+  let i=0,score=0;
+  const show=()=>{
+    if(i>=items.length)return fin();
+    app.innerHTML=nav()+'<div class="bar"><i style="width:'+(i/items.length*100)+'%"></i></div><div class="card" id="body"></div><div id="fbk"></div>';bindBk(back);
+    render(items[i],(ok,exp)=>{
+      if(ok)score++;
+      $('fbk').innerHTML='<div class="exp '+(ok?'ok':'no')+'"><b>'+(ok?'✓ دروستە!':'✗ هەڵەیە')+'</b><br>'+(exp||'')+'</div><div class="center"><button id="nx">دواتر</button></div>';
+      $('nx').onclick=()=>{i++;show()};
+    });
+  };
+  const fin=()=>{
+    const ok=score>=thr;if(ok)onPass();
+    app.innerHTML='<div class="card center"><div class="big">'+score+' / '+items.length+'</div><p>'+(ok?'🎉 مەرحەلەکەت تێپەڕاند!':'پێویستە '+thr+' وەربگریت. دووبارە هەوڵبدەرەوە.')+'</p><button id="re">دووبارە</button> <button class="ghost" id="bb">گەڕانەوە</button></div>';
+    $('re').onclick=()=>run(shuffle(items),thr,onPass,back,render);$('bb').onclick=back;
+  };
+  show();
+}
+function wordItems(arr,pool=W){return arr.map(w=>({w:w[0],k:w[1],r:w[2],opts:shuffle([w[1],...shuffle(pool).filter(x=>x[1]!==w[1]).slice(0,3).map(x=>x[1])])}))}
+function rWord(it,done){
+  $('body').innerHTML='<p class="center kd">واتای ئەم وشەیە چییە؟</p><div class="big">'+it.w+' <button class="ghost" id="pl">🔊</button></div>'+(it.r?'<p class="center" style="margin:0;color:var(--accent);font-weight:700">'+it.r+'</p>':'')+'<div class="opts" id="o"></div>';
+  $('pl').onclick=()=>sp(it.w);sp(it.w);
+  it.opts.forEach(o=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>{
+    document.querySelectorAll('#o button').forEach(x=>{x.disabled=true;if(x.textContent===it.k)x.classList.add('ok')});
+    if(o!==it.k)b.classList.add('no');done(o===it.k,'<span class="en">'+it.w+'</span>'+(it.r?' ('+it.r+')':'')+' = '+it.k)};$('o').appendChild(b)});
+}
+function st1(){
+  app.innerHTML=nav()+'<div class="card"><h2>٥٠٠ وشەی باو</h2><p class="kd">هەر بەشێک ٢٥ وشەیە. وشەکان بخوێنەرەوە، پاشان تاقیکردنەوە (١٠ پرسیار) بکە و ٨ وەربگرە.</p></div><div class="grid" id="g"></div>';bindBk(home);
+  for(let n=1;n<=20;n++){const open=n===1||P.sets[n-1],b=document.createElement('button');b.textContent=P.sets[n]?'✓ '+n:open?n:'🔒';b.className=P.sets[n]?'done':open?'':'lock';b.onclick=()=>{if(open)setView(n)};$('g').appendChild(b)}
+}
+function setView(n){
+  const arr=W.slice((n-1)*25,n*25);
+  app.innerHTML=nav()+'<div class="card"><h2>بەشی '+n+'</h2><p class="kd">لەسەر هەر وشەیەک بدە بۆ گوێگرتن.</p></div><div class="words">'+arr.map((w,i)=>'<button data-i="'+i+'"><b>'+w[0]+'</b><small>'+w[1]+'</small></button>').join('')+'</div><div class="center" style="margin-top:12px"><button id="go">تاقیکردنەوە</button></div>';
+  bindBk(st1);app.querySelectorAll('.words button').forEach(b=>b.onclick=()=>sp(arr[b.dataset.i][0]));
+  $('go').onclick=()=>run(wordItems(shuffle(arr).slice(0,10)),8,()=>{P.sets[n]=1;if(Object.keys(P.sets).length>=4)P.s[1]=1;save()},()=>setView(n),rWord);
+}
+function st2(){
+  app.innerHTML=nav()+LES.map(l=>'<div class="card"><h2>'+l[1]+tag(l[0])+'</h2><p>'+l[2]+'</p><div class="sig">'+l[3].map(s=>'<span>'+s+'</span>').join('')+'</div><p><b>شێواز:</b> '+l[4]+'</p><p class="en">'+l[5]+'</p><p class="kd">'+l[6]+'</p></div>').join('')+'<div class="center"><button id="go">دەستپێبکە</button></div>';
+  bindBk(home);
+  $('go').onclick=()=>run(shuffle(Q).slice(0,10).map(q=>({q,t:Math.random()<.6?'A':'B'})),8,()=>{P.s[2]=1;save()},st2,rTense);
+}
+function rTense(it,done){
+  const q=it.q,full=q[0].replace('___',q[1]),A=it.t==='A',opts=A?shuffle([q[1],...q[2]]):['p','n','f'],right=A?q[1]:q[3];
+  $('body').innerHTML='<p class="center kd">'+(A?'وشە دروستەکە هەڵبژێرە':'ئەم ڕستەیە کامە کاتە؟')+'</p><div class="big" style="font-size:1.4rem">'+(A?q[0]:full)+'</div><p class="center kd">'+q[4]+'</p><div class="opts" id="o"></div>';
+  opts.forEach(o=>{const b=document.createElement('button');b.textContent=A?o:TN[o];b.dataset.v=o;b.onclick=()=>{
+    document.querySelectorAll('#o button').forEach(x=>{x.disabled=true;if(x.dataset.v===right)x.classList.add('ok')});
+    if(o!==right)b.classList.add('no');
+    const m=full.match(/yesterday|last \w+|every \w+|tomorrow|next \w+|tonight/i);
+    done(o===right,'<span class="en">'+full+'</span>'+(m?'نیشانەی کات: <b>'+m[0]+'</b>. ':'')+'کاتەکەی: '+tag(q[3])+'<br>'+RULE[q[3]])};$('o').appendChild(b)});
+}
+function st3(){bld(Q,6,()=>{P.s[3]=1;save()},home)}
+function bld(items,thr,onPass,back){
+  run(shuffle(items).slice(0,8),thr,onPass,back,(q,done)=>{
+    const full=q[0].replace('___',q[1]);let pool=shuffle(full.split(' ').map((w,i)=>({w,i}))),ans=[],fin=false;
+    const draw=()=>{
+      $('body').innerHTML='<p class="center kd">'+q[4]+'</p><div class="chips" id="an">'+(ans.map(c=>'<button class="chip" data-i="'+c.i+'">'+c.w+'</button>').join('')||'<span class="kd">وشەکان لێرە دابنێ</span>')+'</div><div class="chips" id="pl">'+pool.map(c=>'<button class="chip" data-i="'+c.i+'">'+c.w+'</button>').join('')+'</div><div class="center"><button id="ck">پشکنین</button></div>';
+      if(fin)return;
+      $('pl').querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=pool.findIndex(c=>c.i==b.dataset.i);ans.push(pool.splice(k,1)[0]);draw()});
+      $('an').querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=ans.findIndex(c=>c.i==b.dataset.i);pool.push(ans.splice(k,1)[0]);draw()});
+      $('ck').onclick=()=>{fin=true;const ok=ans.map(c=>c.w).join(' ')===full;draw();$('ck').disabled=true;done(ok,'<span class="en">'+full+'</span>')};
+    };draw();
+  });
+}
+function st4(){dict(W.filter(w=>w[0].length>=4),()=>{P.s[4]=1;save()},home)}
+function dict(pool,onPass,back){
+  run(shuffle(pool).slice(0,8).map(w=>({w:w[0],k:w[1]})),6,onPass,back,(it,done)=>{
+    $('body').innerHTML='<p class="center kd">مانا: <b>'+it.k+'</b></p><div class="center"><button id="pl">🔊 گوێ بگرە</button></div><input class="inp" id="in" dir="ltr" autocomplete="off" autocapitalize="off" placeholder="..."><div class="center"><button id="ck">پشکنین</button></div>';
+    $('pl').onclick=()=>sp(it.w);sp(it.w);
+    const chk=()=>{const nz=s=>s.trim().toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');const ok=nz($('in').value)===nz(it.w);$('ck').disabled=true;$('in').disabled=true;done(ok,'<span class="en">'+it.w+'</span> = '+it.k)};
+    $('ck').onclick=chk;$('in').onkeydown=e=>{if(e.key==='Enter'&&!$('ck').disabled)chk()};
+  });
+}
+function st5(){
+  let t=60,sc=0;
+  app.innerHTML=nav()+'<div class="timer"><span>⏱ <b id="tm">60</b></span><span>✓ <b id="sc">0</b></span></div><div class="card" id="body"></div>';bindBk(home);
+  const q=()=>{const it=wordItems([W[Math.floor(Math.random()*W.length)]])[0];
+    $('body').innerHTML='<div class="big">'+it.w+'</div><div class="opts" id="o"></div>';
+    it.opts.forEach(o=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>{if(o===it.k){sc++;$('sc').textContent=sc;}else{t=Math.max(0,t-3);}q()};$('o').appendChild(b)})};
+  q();
+  TM=setInterval(()=>{t--;$('tm').textContent=Math.max(t,0);if(t<=0){clearInterval(TM);
+    if(sc>P.best)P.best=sc;if(sc>=12)P.s[5]=1;save();
+    app.innerHTML='<div class="card center"><div class="big">'+sc+'</div><p>'+(sc>=12?'🏆 نایابە!':'١٢ وەڵامی دروست پێویستە.')+'</p><p class="kd">باشترین: '+P.best+'</p><button id="re">دووبارە</button> <button class="ghost" id="bb">گەڕانەوە</button></div>';
+    $('re').onclick=st5;$('bb').onclick=home;}},1000);
+}
+const hero=(t,s)=>{$('hh').textContent=t;$('hs').textContent=s};
+const DW=`ich=من=ئیش,du=تۆ=دو,er=ئەو (نێر)=ئێر,sie=ئەو (مێ) / ئەوان=زی,wir=ئێمە=ڤیر,ihr=ئێوە=ئیر,ja=بەڵێ=یا,nein=نەخێر=ناین,und=و=ئونت,oder=یان=ئۆدەر,aber=بەڵام=ئابەر,nicht=نا=نیشت,hallo=سڵاو=هالۆ,danke=سوپاس=دانکە,bitte=تکایە=بیتە,gut=باش=گووت,schlecht=خراپ=شلێشت,groß=گەورە=گرۆس,klein=بچووک=کلاین,neu=نوێ=نۆی,alt=کۆن/پیر=ئالت,heute=ئەمڕۆ=هۆیتە,morgen=سبەینێ=مۆرگەن,gestern=دوێنێ=گێستەرن,jetzt=ئێستا=یێتست
+Mann=پیاو=مان,Frau=ژن=فراو,Kind=منداڵ=کینت,Haus=خانوو=هاوس,Auto=ئۆتۆمبێل=ئاوتۆ,Wasser=ئاو=ڤاسەر,Brot=نان=برۆت,Tag=ڕۆژ=تاگ,Nacht=شەو=ناخت,Jahr=ساڵ=یار,Zeit=کات=تسایت,Geld=پارە=گێلت,Arbeit=کار=ئاربایت,Schule=قوتابخانە=شوولە,Buch=کتێب=بووخ,Freund=هاوڕێ=فرۆینت,Familie=خێزان=فامیلیە,Mutter=دایک=موتەر,Vater=باوک=فاتەر,Bruder=برا=بروودەر,Schwester=خوشک=شڤێستەر,Stadt=شار=شتات,Land=وڵات=لانت,Hand=دەست=هانت,Name=ناو=نامە
+sein=بوون=زاین,haben=هەبوون=هابەن,gehen=چوون=گێئەن,kommen=هاتن=کۆمەن,machen=کردن=ماخەن,sehen=بینین=زێئەن,essen=خواردن=ئێسەن,trinken=خواردنەوە=ترینکەن,schlafen=نووستن=شلافەن,lernen=فێربوون=لێرنەن,sprechen=قسەکردن=شپرێشەن,lesen=خوێندنەوە=لێزەن,schreiben=نووسین=شرایبەن,wohnen=نیشتەجێبوون=ڤۆنەن,arbeiten=کارکردن=ئاربایتەن,kaufen=کڕین=کاوفەن,spielen=یاریکردن=شپیلەن,helfen=یارمەتیدان=هێلفەن,wollen=ویستن=ڤۆلەن,können=توانین=کۆنەن,wissen=زانین=ڤیسەن,sagen=وتن=زاگەن,fragen=پرسین=فراگەن,hören=بیستن=هۆرەن,lieben=خۆشویستن=لیبەن
+eins=یەک=ئاینس,zwei=دوو=تسڤای,drei=سێ=درای,vier=چوار=فیر,fünf=پێنج=فوونف,rot=سوور=ڕۆت,blau=شین=بلاو,grün=سەوز=گروون,schwarz=ڕەش=شڤارتس,weiß=سپی=ڤایس,heiß=گەرم=هایس,kalt=سارد=کالت,schön=جوان=شۆن,schnell=خێرا=شنێل,langsam=هێواش=لانگزام,viel=زۆر=فیل,wenig=کەم=ڤێنیش,hier=لێرە=هیر,dort=ئەوێ=دۆرت,wo=کوێ=ڤۆ,was=چی=ڤاس,wer=کێ=ڤێر,warum=بۆچی=ڤاروم,wie=چۆن=ڤی,mit=لەگەڵ=میت
+in=لە ناو=ئین,auf=لەسەر=ئاوف,an=لە=ئان,von=لە/ی=فۆن,zu=بۆ=تسو,für=بۆ (قازانج)=فوور,bei=لەلای=بای,nach=دوای/بەرەو=ناخ,aus=لە (دەرەوە)=ئاوس,um=دەوروبەر=ئوم,durch=بەناو=دورش,über=سەرووی=ئووبەر,unter=ژێر=ئونتەر,vor=پێش=فۆر,hinter=پشت=هینتەر,neben=تەنیشت=نێبەن,zwischen=نێوان=تسڤیشەن,ohne=بەبێ=ئۆنە,gegen=دژ=گێگەن,seit=لەو کاتەوە=زایت,bis=تا=بیس,wenn=ئەگەر/کاتێک=ڤێن,weil=چونکە=ڤایل,dass=کە=داس,auch=هەروەها=ئاوخ
+noch=هێشتا=نۆخ,schon=پێشتر=شۆن,immer=هەمیشە=ئیمەر,nie=هەرگیز=نی,oft=زۆر جار=ئۆفت,manchmal=هەندێک جار=مانشمال,sehr=زۆر=زێر,nur=تەنیا=نور,also=کەواتە=ئالزۆ,dann=پاشان=دان,da=ئەوێ/ئەو کاتە=دا,wann=کەی=ڤان,welche=کام=ڤێلشە,wohin=بۆ کوێ=ڤۆهین,woher=لە کوێوە=ڤۆهێر,vielleicht=لەوانەیە=فیلایشت,wirklich=بەڕاستی=ڤیرکلیش,zusammen=پێکەوە=تسوزامەن,allein=بەتەنیا=ئالاین,fast=نزیکەی=فاست,genau=ڕێک=گەناو,ganz=تەواو=گانتس,besonders=بەتایبەتی=بەزۆندەرس,leider=بەداخەوە=لایدەر,bald=بەم زووانە=بالت
+geben=دان=گێبەن,nehmen=وەرگرتن=نێمەن,finden=دۆزینەوە=فیندەن,bringen=هێنان=برینگەن,bleiben=مانەوە=بلایبەن,stehen=ڕاوەستان=شتێئەن,sitzen=دانیشتن=زیتسەن,liegen=درێژبوون=لیگەن,laufen=ڕاکردن=لاوفەن,fahren=لێخوڕین=فارەن,fliegen=فڕین=فلیگەن,schwimmen=مەلەکردن=شڤیمەن,singen=گۆرانی وتن=زینگەن,tanzen=هەڵپەڕین=تانتسەن,lachen=پێکەنین=لاخەن,weinen=گریان=ڤاینەن,warten=چاوەڕێکردن=ڤارتەن,brauchen=پێویستبوون=براوخەن,glauben=باوەڕکردن=گلاوبەن,denken=بیرکردنەوە=دێنکەن,verstehen=تێگەیشتن=فێرشتێئەن,vergessen=لەبیرکردن=فێرگێسەن,öffnen=کردنەوە=ئۆفنەن,schließen=داخستن=شلیسەن,anfangen=دەستپێکردن=ئانفانگەن
+kochen=چێشتلێنان=کۆخەن,waschen=شتن=ڤاشەن,tragen=هەڵگرتن=تراگەن,ziehen=کێشان=تسیئەن,fallen=کەوتن=فالەن,steigen=سەرکەوتن=شتایگەن,treffen=ڕووبەڕووبوون=ترێفەن,besuchen=سەردانکردن=بەزوخەن,bezahlen=پارەدان=بەتسالەن,verkaufen=فرۆشتن=فێرکاوفەن,bauen=بیناکردن=باوەن,zeigen=پیشاندان=تسایگەن,erklären=ڕوونکردنەوە=ئێرکلێرەن,antworten=وەڵامدانەوە=ئانتڤۆرتەن,rufen=بانگکردن=ڕووفەن,anrufen=تەلەفۆنکردن=ئانڕووفەن,suchen=گەڕان=زوخەن,mögen=حەزکردن=مۆگەن,dürfen=ڕێپێدراو بوون=دوورفەن,müssen=دەبێت=مووسەن,sollen=پێویستە=زۆلەن,werden=بوون بە=ڤێردەن,bekommen=وەرگرتن (دەستکەوتن)=بەکۆمەن,leben=ژیان=لێبەن,sterben=مردن=شتێربەن
+Tisch=مێز=تیش,Stuhl=کورسی=شتوول,Bett=جێگا=بێت,Tür=دەرگا=توور,Fenster=پەنجەرە=فێنستەر,Zimmer=ژوور=تسیمەر,Küche=چێشتخانە=کووشە,Garten=باخچە=گارتەن,Straße=شەقام=شتراسە,Kopf=سەر=کۆپف,Auge=چاو=ئاوگە,Ohr=گوێ=ئۆر,Nase=لووت=نازە,Mund=دەم=مونت,Fuß=پێ=فووس,Arm=قۆڵ=ئارم,Herz=دڵ=هێرتس,Haar=قژ=هار,Gesicht=ڕووخسار=گەزیشت,Körper=لەش=کۆرپەر,Tasche=جانتا=تاشە,Schlüssel=کلیل=شلووسەل,Uhr=کاتژمێر=ئوور,Lampe=لەمپا=لامپە,Telefon=تەلەفۆن=تێلێفۆن
+Essen=خواردن (ناو)=ئێسەن,Tee=چا=تێ,Kaffee=قاوە=کافێ,Milch=شیر=میلش,Reis=برنج=ڕایس,Fleisch=گۆشت=فلایش,Fisch=ماسی=فیش,Ei=هێلکە=ئای,Obst=میوە=ئۆپست,Apfel=سێو=ئاپفەل,Salz=خوێ=زالتس,Zucker=شەکر=تسوکەر,Frühstück=نانی بەیانی=فرووشتووک,Mittagessen=نانی نیوەڕۆ=میتاگئێسەن,Abendessen=نانی شێو=ئابەندئێسەن,Gemüse=سەوزە=گەمووزە,Kartoffel=پەتاتە=کارتۆفەل,Tomate=تەماتە=توماتە,Zwiebel=پیاز=تسڤیبەل,Käse=پەنیر=کێزە,Butter=کەرە=بوتەر,Bier=بیرە=بیر,Saft=شەربەت=زافت,Suppe=شۆربا=زوپە,Kuchen=کێک=کوخەن
+Lehrer=مامۆستا=لێرەر,Schüler=قوتابی=شوولەر,Arzt=دکتۆر=ئارتست,Polizist=پۆلیس=پۆلیتسیست,Fahrer=شوفێر=فارەر,Bauer=جوتیار=باوەر,Koch=چێشتلێنەر=کۆخ,Verkäufer=فرۆشیار=فێرکۆیفەر,Arbeiter=کرێکار=ئاربایتەر,König=پاشا=کۆنیش,Junge=کوڕ=یونگە,Mädchen=کچ=مێدشەن,Baby=کۆرپە=بەیبی,Mensch=مرۆڤ=مێنش,Leute=خەڵک=لۆیتە,Gast=میوان=گاست,Nachbar=دراوسێ=ناخبار,Chef=بەڕێوەبەر=شێف,Kollege=هاوکار=کۆلێگە,Herr=بەڕێز (پیاو)=هێر,Sohn=کوڕ (منداڵ)=زۆن,Tochter=کچ (منداڵ)=تۆخەتەر,Onkel=مام/خاڵ=ئۆنکەل,Tante=پوور/خاڵۆژن=تانتە,Oma=نەنک=ئۆما
+Woche=هەفتە=ڤۆخە,Monat=مانگ (ماوە)=مۆنات,Stunde=کاتژمێر (ماوە)=شتوندە,Minute=خولەک=مینووتە,Sekunde=چرکە=زێکوندە,Morgen=بەیانی=مۆرگەن,Mittag=نیوەڕۆ=میتاگ,Nachmittag=پاشنیوەڕۆ=ناخمیتاگ,Abend=ئێوارە=ئابەند,Montag=دووشەممە=مۆنتاگ,Dienstag=سێشەممە=دینستاگ,Mittwoch=چوارشەممە=میتڤۆخ,Donnerstag=پێنجشەممە=دۆنەرستاگ,Freitag=هەینی=فرایتاگ,Samstag=شەممە=زامستاگ,Sonntag=یەکشەممە=زۆنتاگ,Frühling=بەهار=فرووڵینگ,Sommer=هاوین=زۆمەر,Herbst=پایز=هێربست,Winter=زستان=ڤینتەر,Ende=کۆتایی=ئێندە,Anfang=دەستپێک=ئانفانگ,früh=زوو=فروو,spät=درەنگ=شپێت,Geburtstag=ڕۆژی لەدایکبوون=گەبورتستاگ
+Krankenhaus=نەخۆشخانە=کرانکەنهاوس,Flughafen=فڕۆکەخانە=فلووکهافەن,Bahnhof=وێستگەی شەمەندەفەر=بانهۆف,Zug=شەمەندەفەر=تسووگ,Bus=پاس=بوس,Flugzeug=فڕۆکە=فلووکتسۆیگ,Fahrrad=پاسکیل=فارراد,Boot=بەلەم=بۆت,Taxi=تاکسی=تاکسی,Markt=بازاڕ=مارکت,Geschäft=دوکان=گەشێفت,Bank=بانک=بانک,Post=پۆستە=پۆست,Restaurant=چێشتخانەی گشتی=ڕێستۆڕان,Hotel=هۆتێل=هۆتێل,Kirche=کەنیسە=کیرشە,Park=باخچەی گشتی=پارک,Dorf=گوند=دۆرف,Berg=شاخ=بێرگ,Meer=دەریا=مێر,Fluss=ڕووبار=فلوس,Wald=دارستان=ڤالت,Strand=کەنار=شترانت,Brücke=پرد=برووکە,Weg=ڕێگا=ڤێگ
+Sonne=خۆر=زۆنە,Mond=مانگ (ئاسمان)=مۆنت,Stern=ئەستێرە=شتێرن,Himmel=ئاسمان=هیمەل,Regen=باران=ڕێگەن,Schnee=بەفر=شنێ,Wind=با=ڤینت,Feuer=ئاگر=فۆیەر,Baum=دار=باوم,Blume=گوڵ=بلومە,Stein=بەرد=شتاین,Tier=ئاژەڵ=تیر,Hund=سەگ=هونت,Katze=پشیلە=کاتسە,Pferd=ئەسپ=پفێرت,Vogel=باڵندە=فۆگەل,Kuh=مانگا=کو,Schaf=مەڕ=شاف,Huhn=مریشک=هون,Löwe=شێر=لۆڤە,Wetter=کەشوهەوا=ڤێتەر,Luft=هەوا=لوفت,Erde=زەوی=ئێردە,Farbe=ڕەنگ=فاربە,Licht=ڕووناکی=لیشت
+lang=درێژ=لانگ,kurz=کورت=کورتس,hoch=بەرز=هۆخ,niedrig=نزم=نیدریش,breit=پان=برایت,schwer=قورس/سەخت=شڤێر,leicht=سووک/ئاسان=لایشت,einfach=ئاسان/سادە=ئاینفاخ,schwierig=سەخت=شڤیریش,richtig=دروست=ڕیشتیش,falsch=هەڵە=فالش,wichtig=گرنگ=ڤیشتیش,anders=جیاواز=ئاندەرس,gleich=هەمان=گلایش,jung=گەنج=یونگ,billig=هەرزان=بیلیش,teuer=گران=تۆیەر,sauber=پاک=زاوبەر,schmutzig=پیس=شموتسیش,dunkel=تاریک=دونکەل,hell=ڕووناک=هێل,stark=بەهێز=شتارک,schwach=لاواز=شڤاخ,reich=دەوڵەمەند=ڕایش,arm=هەژار=ئارم
+glücklich=دڵخۆش=گلووکلیش,traurig=خەمبار=تراوریش,müde=ماندوو=مووده,wach=بێدار=ڤاخ,krank=نەخۆش=کرانک,gesund=تەندروست=گەزونت,hungrig=برسی=هونگریش,durstig=تینوو=دورستیش,froh=دڵشاد=فرۆ,böse=توڕە/خراپ=بۆزە,lustig=خۆش/پێکەنیناوی=لوستیش,nett=دڵگەرم/باش=نێت,freundlich=دۆستانە=فرۆینتلیش,ruhig=ئارام=ڕووئیش,laut=بەدەنگ=لاوت,leise=هێمن/بێدەنگ=لایزە,bereit=ئامادە=بەرایت,frei=ئازاد=فرای,voll=پڕ=فۆل,leer=بەتاڵ=لێر,offen=کراوە=ئۆفەن,geschlossen=داخراو=گەشلۆسەن,sicher=دڵنیا/سەلامەت=زیشەر,gefährlich=مەترسیدار=گەفێرلیش,interessant=سەرنجڕاکێش=ئینتەرێسانت
+Eltern=دایک و باوک=ئێلتەرن,Großvater=باپیر=گرۆسفاتەر,Großmutter=نەنک (دایکی دایک)=گرۆسموتەر,Enkel=نەوە=ئێنکەل,Ehefrau=هاوسەر (ژن)=ئێهەفراو,Ehemann=هاوسەر (پیاو)=ئێهەمان,Hochzeit=زەماوەند=هۆخزایت,Liebe=خۆشەویستی=لیبە,Freundin=هاوڕێی کچ=فرۆیندین,Problem=کێشە=پرۆبلێم,Frage=پرسیار=فراگە,Antwort=وەڵام=ئانتڤۆرت,Idee=بیرۆکە=ئیدێ,Fehler=هەڵە (ناو)=فێلەر,Geschichte=چیرۆک/مێژوو=گەشیشتە,Lied=گۆرانی=لیت,Musik=مۆسیقا=موزیک,Bild=وێنە=بیلت,Brief=نامە=بریف,Zeitung=ڕۆژنامە=تسایتونگ,Papier=کاغەز=پاپیر,Spiel=یاری=شپیل,Reise=گەشت=ڕایزە,Urlaub=پشوو=ئورلاوب,Geschenk=دیاری=گەشێنک
+Firma=کۆمپانیا=فیرما,Büro=نووسینگە=بوورۆ,Beruf=پیشە=بەڕووف,Preis=نرخ=پرایس,Rechnung=پسوولە=ڕێشنونگ,Ding=شت=دینگ,Sache=شت/کار=زاخە,Teil=بەش=تایل,Mitte=ناوەڕاست=میتە,Seite=لاپەڕە/لا=زایتە,Ort=شوێن=ئۆرت,Platz=شوێن/مەیدان=پلاتس,Welt=جیهان=ڤێلت,Leben=ژیان (ناو)=لێبەن,Hilfe=یارمەتی=هیلفە,Gesundheit=تەندروستی=گەزونتهایت,Krieg=جەنگ=کریگ,Frieden=ئاشتی=فریدەن,Recht=مافە=ڕێشت,Gesetz=یاسا=گەزێتس,Regierung=حکومەت=ڕەگیرونگ,Zahl=ژمارە=تسال,Ergebnis=ئەنجام=ئێرگێبنیس,Grund=هۆکار=گرونت,Beispiel=نموونە=بایشپیل
+sechs=شەش=زێکس,sieben=حەوت=زیبەن,acht=هەشت=ئاخت,neun=نۆ=نۆین,zehn=دە=تسێن,elf=یازدە=ئێلف,zwölf=دوازدە=تسڤۆلف,zwanzig=بیست=تسڤانتسیش,dreißig=سی=درایسیش,hundert=سەد=هوندەرت,tausend=هەزار=تاوزەنت,erste=یەکەم=ئێرستە,zweite=دووەم=تسڤایتە,dritte=سێیەم=دریتە,gelb=زەرد=گێلب,braun=قاوەیی=براون,grau=خۆڵەمێشی=گراو,rosa=پەمەیی=ڕۆزا,orange=پرتەقاڵی=ئۆڕانژە,halb=نیوە=هالب,beide=هەردووک=بایدە,alle=هەموو=ئالە,jeder=هەر یەک=یێدەر,kein=هیچ (نا)=کاین,etwas=شتێک=ئێتڤاس
+Guten Morgen=بەیانیت باش=گووتەن مۆرگەن,Guten Tag=ڕۆژباش=گووتەن تاگ,Guten Abend=ئێوارە باش=گووتەن ئابەند,Gute Nacht=شەو باش=گووتە ناخت,Auf Wiedersehen=خوا حافیز=ئاوف ڤیدەرزێئەن,Tschüss=بە خاترت (ناڕەسمی)=چووس,Entschuldigung=ببورە=ئێنتشولدیگونگ,Es tut mir leid=بێزارم/ببورە=ئێس توت میر لایت,Wie geht's=چۆنی=ڤی گێتس,Danke schön=زۆر سوپاس=دانکە شۆن,Bitte schön=فەرموو=بیتە شۆن,Ich weiß nicht=نازانم=ئیش ڤایس نیشت,Ich verstehe=تێدەگەم=ئیش فێرشتێهە,Wie heißt du=ناوت چییە=ڤی هایست دو,Ich heiße=ناوم...=ئیش هایسە,Woher kommst du=خەڵکی کوێیت=ڤۆهێر کۆمست دو,Ich komme aus=من خەڵکی...م=ئیش کۆمە ئاوس,Wie viel=چەند=ڤی فیل,Wie spät ist es=کاتژمێر چەندە=ڤی شپێت ئیست ئێس,Ich habe Hunger=برسیمە=ئیش هابە هونگەر,Ich habe Durst=تینووم=ئیش هابە دورست,Das ist gut=ئەمە باشە=داس ئیست گووت,Noch einmal=یەکجاری تر=نۆخ ئاینمال,Langsam bitte=هێواش تکایە=لانگزام بیتە,Ja bitte=بەڵێ تکایە=یا بیتە`.split('\n').join(',').split(',').map(x=>x.split('=').map(t=>t.trim()));
+const DA=`der Mann=پیاو,der Vater=باوک,der Bruder=برا,der Tag=ڕۆژ,der Tisch=مێز,der Hund=سەگ,der Apfel=سێو,der Freund=هاوڕێ,die Frau=ژن,die Mutter=دایک,die Schwester=خوشک,die Schule=قوتابخانە,die Nacht=شەو,die Stadt=شار,die Familie=خێزان,die Katze=پشیلە,die Zeit=کات,das Kind=منداڵ,das Haus=خانوو,das Auto=ئۆتۆمبێل,das Wasser=ئاو,das Brot=نان,das Buch=کتێب,das Geld=پارە,das Jahr=ساڵ,das Land=وڵات`.split(',').map(x=>{const[a,k]=x.split('=');const t=a.split(' ');return[t[0],t.slice(1).join(' '),k]});
+const DS=[['Ich habe ein Auto.','من ئۆتۆمبێلێکم هەیە.'],['Wir gehen heute zur Schule.','ئەمڕۆ دەچین بۆ قوتابخانە.'],['Das Kind trinkt Wasser.','منداڵەکە ئاو دەخواتەوە.'],['Mein Vater arbeitet in der Stadt.','باوکم لە شار کار دەکات.'],['Die Frau liest ein Buch.','ژنەکە کتێبێک دەخوێنێتەوە.'],['Ich esse Brot und trinke Tee.','من نان دەخۆم و چا دەخۆمەوە.'],['Wo wohnst du?','تۆ لە کوێ دەژیت؟'],['Ich bin müde.','من ماندووم.']].map(x=>[x[0],'',[],'',x[1]]);
+P.de=P.de||{sets:{},s:{}};const D=P.de;
+const DST=[
+{ic:'📚',t:'٥٠٠ وشەی باو',d:'٢٠ بەش، هەر یەکە ٢٥ وشە، لەگەڵ خوێندنەوەی کوردی',go:()=>deWords()},
+{ic:'🎯',t:'der / die / das',d:'ناسناوی ناوەکان',go:()=>deArt()},
+{ic:'🧩',t:'ڕستە دروستکردن',d:'وشەکان بە ڕیز دابنێ',go:()=>bld(DS,6,()=>{D.s[3]=1;save()},deHome)},
+{ic:'🎧',t:'گوێگرتن و نووسین',d:'گوێ بگرە و وشەکە بنووسە',go:()=>dict(DW.filter(w=>!w[0].includes(' ')),()=>{D.s[4]=1;save()},deHome)}];
+function langs(){
+  clearInterval(TM);hero('🌍 فێربوونی زمان','زمانێک هەڵبژێرە');$('hp').style.width='0%';
+  app.innerHTML='<button class="tile" id="l1"><span class="ic" style="font-weight:800;color:var(--accent)">EN</span><span><b>ئینگلیزی</b><small>٥ مەرحەلە، ٥٠٠ وشە</small></span><span class="st">▶</span></button><button class="tile" id="l2"><span class="ic" style="font-weight:800;color:var(--accent2)">DE</span><span><b>ئەڵمانی</b><small>٤ مەرحەلە، ٥٠٠ وشە، der / die / das</small></span><span class="st">▶</span></button>';
+  $('l1').onclick=home;$('l2').onclick=deHome;
+}
+function deHome(){
+  clearInterval(TM);CUR='de';hero('فێربوونی ئەڵمانی','Deutsch lernen — مەرحەلە بە مەرحەلە');
+  const n=Object.keys(D.sets).length*25;$('hp').style.width=(n/5)+'%';
+  app.innerHTML='<div class="nav"><button class="ghost" id="bk">↩ زمانەکان</button></div>'+DST.map((s,i)=>{const open=i===0||D.s[i];return '<button class="tile'+(open?'':' lock')+'" data-i="'+i+'"><span class="ic">'+s.ic+'</span><span><b>مەرحەلەی '+(i+1)+': '+s.t+'</b><small>'+s.d+'</small></span><span class="st">'+(D.s[i+1]?'✅':open?'▶':'🔒')+'</span></button>'}).join('')+'<p class="center kd">وشە فێربووەکان: '+n+' / 500 — بۆ کردنەوەی مەرحەلەی دواتر دەبێت ٨ لە ١٠ (یان ٦ لە ٨) وەربگریت.</p>';
+  bindBk(langs);app.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i===0||D.s[i])DST[i].go()});
+}
+const GUIDE='<details class="card"><summary><b>ڕێنمایی خوێندنەوە بە کوردی</b></summary><ul style="padding-inline-start:18px;margin:8px 0"><li><b>ch</b>: دوای a / o / u / au دەبێت <b>خ</b> (Nacht = ناخت)، لە شوێنی تر <b>ش</b> (ich = ئیش)</li><li><b>sch</b> = ش (schön = شۆن)، <b>st / sp</b> لە سەرەتای وشەدا = شت / شپ (Stadt = شتات)</li><li><b>w</b> = ڤ (wir = ڤیر)، <b>v</b> = ف، <b>z</b> = تس (Zeit = تسایت)، <b>s</b> پێش دەنگدار = ز (sehen = زێئەن)، <b>ß / ss</b> = س</li><li><b>ei</b> = ئای (nein = ناین)، <b>eu / äu</b> = ئۆی (heute = هۆیتە)، <b>ie</b> = ی درێژ (Bier = بیر)</li><li><b>ü</b> = ئوو (لێوەکانت خڕ بکە)، <b>ö</b> = ئۆ، <b>ä</b> = ێ</li></ul><p class="kd">پیتە کوردییەکان نزیکەی دەنگی ئەڵمانین. بۆ دەنگی ڕاست لەسەر 🔊 یان وشەکە بدە.</p></details>';
+function deWords(){
+  app.innerHTML=nav()+'<div class="card"><h2>٥٠٠ وشەی باوی ئەڵمانی</h2><p class="kd">٢٠ بەش. بۆ کردنەوەی مەرحەلەی دواتر ٤ بەش تێپەڕێنە.</p></div>'+GUIDE+'<div class="grid" id="g"></div>';bindBk(deHome);
+  for(let n=1;n<=20;n++){const open=n===1||D.sets[n-1],b=document.createElement('button');b.textContent=D.sets[n]?'✓ '+n:open?n:'🔒';b.className=D.sets[n]?'done':open?'':'lock';b.onclick=()=>{if(open)deSet(n)};$('g').appendChild(b)}
+}
+function deSet(n){
+  const arr=DW.slice((n-1)*25,n*25);
+  app.innerHTML=nav()+'<div class="card"><h2>بەشی '+n+'</h2><p class="kd">لەسەر هەر وشەیەک بدە بۆ گوێگرتن. خوێندنەوەی کوردی بە ڕەنگی مۆر لە ژێر هەر وشەیەکدایە.</p></div>'+GUIDE+'<div class="words">'+arr.map((w,i)=>'<button data-i="'+i+'"><b>'+w[0]+'</b><small class="r">'+(w[2]||'')+'</small><small>'+w[1]+'</small></button>').join('')+'</div><div class="center" style="margin-top:12px"><button id="go">تاقیکردنەوە</button></div>';
+  bindBk(deWords);app.querySelectorAll('.words button').forEach(b=>b.onclick=()=>sp(arr[b.dataset.i][0]));
+  $('go').onclick=()=>run(wordItems(shuffle(arr).slice(0,10),DW),8,()=>{D.sets[n]=1;if(Object.keys(D.sets).length>=4)D.s[1]=1;save()},()=>deSet(n),rWord);
+}
+function deArt(){
+  app.innerHTML=nav()+'<div class="card"><h2>der / die / das</h2><p>هەر ناوێکی ئەڵمانی ناسناوێکی هەیە: <b>der</b> (نێر)، <b>die</b> (مێ)، <b>das</b> (بێلایەن).</p><p class="kd">ناسناوەکە لەگەڵ ناوەکە فێر ببە و هەمیشە پێکەوە بیڵێ: der Mann، die Frau، das Kind.</p></div><div class="center"><button id="go">دەستپێبکە</button></div>';
+  bindBk(deHome);
+  $('go').onclick=()=>run(shuffle(DA).slice(0,10),8,()=>{D.s[2]=1;save()},deArt,(it,done)=>{
+    $('body').innerHTML='<p class="center kd">ناسناوی دروست هەڵبژێرە</p><div class="big">___ '+it[1]+' <button class="ghost" id="pl">🔊</button></div><p class="center kd">'+it[2]+'</p><div class="opts" id="o"></div>';
+    $('pl').onclick=()=>sp(it[1]);
+    ['der','die','das'].forEach(a=>{const b=document.createElement('button');b.textContent=a;b.onclick=()=>{
+      document.querySelectorAll('#o button').forEach(x=>{x.disabled=true;if(x.textContent===it[0])x.classList.add('ok')});
+      if(a!==it[0])b.classList.add('no');done(a===it[0],'<span class="en">'+it[0]+' '+it[1]+'</span> = '+it[2])};$('o').appendChild(b)});
+  });
+}
+langs();
+</script>
+</body>
+</html>
